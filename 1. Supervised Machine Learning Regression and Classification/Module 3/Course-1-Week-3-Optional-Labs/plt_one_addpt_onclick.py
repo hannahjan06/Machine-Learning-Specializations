@@ -176,11 +176,13 @@ class plt_one_addpt_onclick:
         #print(f"bb     : {bcid.rectangles[0].get_bbox()}")
         #print(f"points : {bcid.rectangles[0].get_bbox().get_points()}")  #[[xmin,ymin],[xmax,ymax]]
 
-        h = bcid.rectangles[0].get_height()
-        bcid.rectangles[0].set_height(3*h)
-
-        ymax = bcid.rectangles[0].get_bbox().y1
-        ymin = bcid.rectangles[0].get_bbox().y0
-
-        bcid.lines[0][0].set_ydata([ymax,ymin])
-        bcid.lines[0][1].set_ydata([ymin,ymax])
+        try:
+            # Check if there are any patches (checkbox boxes)
+            if hasattr(bcid.ax, "patches") and bcid.ax.patches:
+                for rect in bcid.ax.patches:
+                    h = rect.get_height()
+                    rect.set_height(3 * h)  # Make it 3x taller
+            else:
+                print("Checkbox patches not found — resize skipped")
+        except Exception as e:
+            print("Resize failed gracefully:", e)
